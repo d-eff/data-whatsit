@@ -41,7 +41,20 @@
             progress.innerHTML = 'DONE.';
 
             let content = chunks.join("");
-            console.log(content);
+            let contentArr = content.split('\n');
+            
+            contentArr.forEach((index, ele) => {
+              let maybeParsed;
+              try {
+                maybeParsed = JSON.parse(ele);
+              } catch(err) {
+                //<33 you javascript and your lack of types
+                maybeParsed = err;
+              }
+              contentArr[index] = maybeParsed;
+            });
+            
+            console.log(contentArr);
           };
           }
         };
