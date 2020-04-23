@@ -2,19 +2,7 @@
 <html>
   <head>
     <title>king of new york</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style>
-      body {
-        background-color: #222831;
-        color: #ececec;
-      }
-      main {
-        font-size: 18px;
-        margin: 40px auto;
-        min-height: 80vh;
-        width: 70vw;
-      }  
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <main>
@@ -53,24 +41,12 @@
               let blob = file.slice(offset, offset + chunkSize);
               reader.readAsText(blob);
             } else {
-              progress.innerHTML = 'DONE.';
+              progress.innerHTML = `chunks: ${chunks.length} bytes: ${bytes} COMPLETE`;
+              let data = parseFileData(chunks);
+              let headers = getHeaders(data);
 
-              let content = chunks.join("");
-              let contentArr = content.split('\n');
-              
-              contentArr.forEach((index, ele) => {
-                let maybeParsed;
-                try {
-                  maybeParsed = JSON.parse(ele);
-                } catch(err) {
-                  //<33 you javascript and your lack of types
-                  maybeParsed = err;
-                }
-                contentArr[index] = maybeParsed;
-              });
-              
               //hello
-              console.log(contentArr);
+              console.log(data);
               fileEle.value = null;
             };
           }
@@ -79,6 +55,23 @@
         let blob = file.slice(offset, offset + chunkSize);
         reader.readAsText(blob);
       }
+    }
+
+    function parseFileData(chunks) {
+      let content = chunks.join("");
+      let contentArr = content.split('\n');
+    
+      return contentArr.map((ele) => {
+        try {
+          return JSON.parse(ele);
+        } catch (e) {
+          return "";
+        }
+      }).filter(ele => typeof ele === "object");
+    }
+
+    function getHeaders(data) {
+      let headers = [];
     }
   </script>
 </html>
