@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>king of new york</title>
+  </head>
+  <body>
+    <input type='file' name='file' id='file'>
+    <div id='progress'>
+  </body>
+
+  <script>
+    let fileEle = document.getElementById('file');
+    fileEle.addEventListener('change', onFileChange);
+
+    function onFileChange() {
+      let file = fileEle.files[0];
+      let progress = document.getElementById('progress');
+
+      if (file) {
+        let reader = new FileReader();
+        const fileSize = file.size;
+        const chunkSize = Math.pow(2,13);
+        let chunks = [];
+
+        let offset = 0;
+        let bytes = 0;
+
+        reader.onloadend = function(e) {
+          if (e.target.readyState === FileReader.DONE) {
+            let chunk = e.target.result;
+            bytes += chunk.length;
+
+            chunks.push(chunk);
+            progress.innerHTML = `chunks: ${chunks.length} bytes: ${bytes}`;
+            
+            if (offset < fileSize) {
+              offset += chunkSize;
+              let blob = file.slice(offset, offset + chunkSize);
+              reader.readAsText(blob);
+            } else {
+            progress.innerHTML = 'DONE.';
+
+            let content = chunks.join("");
+            console.log(content);
+          };
+          }
+        };
+
+        let blob = file.slice(offset, offset + chunkSize);
+        reader.readAsText(blob);
+      }
+    }
+  </script>
+</html>
