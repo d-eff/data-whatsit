@@ -1,11 +1,17 @@
 let fileEle = document.querySelector('#file');
 let progress = document.querySelector('#progress');
+let tableContainer = document.querySelector('#tableWrap');
 fileEle.addEventListener('change', onFileChange);
 
 let data = [];
 let headers = [];
 
 function onFileChange() {
+  //reset
+  data = [];
+  headers = [];
+  tableContainer.innerHTML = '';
+
   let file = fileEle.files[0];
 
   if (file) {
@@ -50,7 +56,7 @@ function onFileChange() {
 }
 
 function parseFileData(chunks) {
-  progress.innerHTML += `<p>PARSING...</p>`;
+  // progress.innerHTML += `<p>PARSING...</p>`;
   let content = chunks.join("");
   let contentArr = content.split('\n');
 
@@ -64,7 +70,7 @@ function parseFileData(chunks) {
 }
 
 function getHeaders(data) {
-  progress.innerHTML += `<p>GETTING HEADERS...</p>`;
+  // progress.innerHTML += `<p>GETTING HEADERS...</p>`;
   let headers = [];
 
   data.forEach((ele, idx) => {
@@ -78,7 +84,7 @@ function getHeaders(data) {
 }
 
 function buildTable(data, headers) {
-  progress.innerHTML += `<p>BUILDING TABLE...</p>`;
+  // progress.innerHTML += `<p>BUILDING TABLE...</p>`;
   let thead = '';
   headers.forEach(ele => {
     //todo: is '' to `` a cast? how are those interpreted?
@@ -99,7 +105,6 @@ function buildTable(data, headers) {
                 <tbody>${tbody}</tbody>
               </table>`;
 
-  progress.innerHTML += `<p>DRAWING TABLE...</p>`;
-  let container = document.querySelector('#tableWrap');
-  container.innerHTML = table;
+  // progress.innerHTML += `<p>DRAWING TABLE...</p>`;
+  tableContainer.innerHTML = table;
 }
