@@ -1,4 +1,5 @@
 let fileEle = document.querySelector('#file');
+let progress = document.querySelector('#progress');
 fileEle.addEventListener('change', onFileChange);
 
 let data = [];
@@ -6,7 +7,6 @@ let headers = [];
 
 function onFileChange() {
   let file = fileEle.files[0];
-  let progress = document.querySelector('#progress');
 
   if (file) {
     let reader = new FileReader();
@@ -23,7 +23,7 @@ function onFileChange() {
         bytes += chunk.length;
 
         chunks.push(chunk);
-        progress.innerHTML = `chunks: ${chunks.length} bytes: ${bytes}`;
+        progress.innerHTML = `<p>chunks: ${chunks.length} bytes: ${bytes}</p>`;
         
         if (offset < fileSize) {
           offset += chunkSize;
@@ -33,14 +33,13 @@ function onFileChange() {
           //we're done with this, reset it now in case we fail parsing
           fileEle.value = null;
 
-          progress.innerHTML = `chunks: ${chunks.length} bytes: ${bytes} COMPLETE`;
+          progress.innerHTML += `<p>LOAD COMPLETE.</p>`;
           data = parseFileData(chunks);
 
           //don't need this if we can get the headers loaded in via separate file
           headers = getHeaders(data);
 
-          //hello
-          // buildTable(data, headers);
+          buildTable(data, headers);
         };
       }
     };
@@ -51,6 +50,7 @@ function onFileChange() {
 }
 
 function parseFileData(chunks) {
+  progress.innerHTML += `<p>PARSING...</p>`;
   let content = chunks.join("");
   let contentArr = content.split('\n');
 
@@ -64,6 +64,7 @@ function parseFileData(chunks) {
 }
 
 function getHeaders(data) {
+  progress.innerHTML += `<p>GETTING HEADERS...</p>`;
   let headers = [];
 
   data.forEach((ele, idx) => {
@@ -74,4 +75,31 @@ function getHeaders(data) {
   });
 
   return headers;
+}
+
+function buildTable(data, headers) {
+  progress.innerHTML += `<p>BUILDING TABLE...</p>`;
+  let thead = '';
+  headers.forEach(ele => {
+    //todo: is '' to `` a cast? how are those interpreted?
+    thead += `<th>${ele}</th>`
+  })
+  
+  let tbody = '';
+  data.forEach(ele => {
+    tbody += '<tr>'
+    headers.forEach(header => {
+      tbody += `<td>${ele.hasOwnProperty(header) ? ele[header] : ''}</td>`;
+    });
+    tbody += '</tr>'
+  });
+
+  let table = `<table>
+                <thead><tr>${thead}</tr></thead>
+                <tbody>${tbody}</tbody>
+              </table>`;
+
+  progress.innerHTML += `<p>DRAWING TABLE...</p>`;
+  let container = document.querySelector('#tableWrap');
+  container.innerHTML = table;
 }
