@@ -1,9 +1,12 @@
-let fileEle = document.getElementById('file');
+let fileEle = document.querySelector('#file');
 fileEle.addEventListener('change', onFileChange);
+
+let data = [];
+let headers = [];
 
 function onFileChange() {
   let file = fileEle.files[0];
-  let progress = document.getElementById('progress');
+  let progress = document.querySelector('#progress');
 
   if (file) {
     let reader = new FileReader();
@@ -27,13 +30,17 @@ function onFileChange() {
           let blob = file.slice(offset, offset + chunkSize);
           reader.readAsText(blob);
         } else {
+          //we're done with this, reset it now in case we fail parsing
+          fileEle.value = null;
+
           progress.innerHTML = `chunks: ${chunks.length} bytes: ${bytes} COMPLETE`;
-          let data = parseFileData(chunks);
-          let headers = getHeaders(data);
+          data = parseFileData(chunks);
+
+          //don't need this if we can get the headers loaded in via separate file
+          headers = getHeaders(data);
 
           //hello
-          console.log(data);
-          fileEle.value = null;
+          // buildTable(data, headers);
         };
       }
     };
@@ -47,7 +54,7 @@ function parseFileData(chunks) {
   let content = chunks.join("");
   let contentArr = content.split('\n');
 
-  return contentArr.map((ele) => {
+  return contentArr.map(ele => {
     try {
       return JSON.parse(ele);
     } catch (e) {
@@ -58,4 +65,13 @@ function parseFileData(chunks) {
 
 function getHeaders(data) {
   let headers = [];
+
+  data.forEach((ele, idx) => {
+    let keys = Object.keys(ele);
+    if (keys.length > headers.length) {
+      headers = keys;
+    }
+  });
+
+  return headers;
 }
