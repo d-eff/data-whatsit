@@ -130,6 +130,8 @@ function buildTableBody(data, headers) {
 }
 
 function buildTable(data, headers) {
+  progress.innerHTML += `<p>Rendering...</p>`;
+  tableContainer.innerHTML = '';
   let thead = buildTableHead(headers);
   
   let tbody = buildTableBody(data, headers);
@@ -138,5 +140,10 @@ function buildTable(data, headers) {
                 <thead><tr>${thead}</tr></thead>
                 <tbody>${tbody}</tbody>
               </table>`;
-  tableContainer.innerHTML = table;
+          
+  setTimeout(() => {
+    tableContainer.innerHTML = table;
+    progress.innerHTML += `<p>Done.</p>`;
+  }, 0);
+  
 }
