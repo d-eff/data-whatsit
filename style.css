@@ -8,30 +8,30 @@ main {
   font-size: 16px;
   margin: 40px;
   min-height: 80vh;
-  
 }  
+
+table {
+  border-collapse: collapse;
+}
 
 th {
   background-color: #ececec;
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
   color: #222831;
   font-weight: bold;
+  padding: 2px 4px;
   position: sticky;
+  text-align: left;
   top: 0;
 }
 
-th, td {
-  border-bottom: 1px solid #E1E1E1; 
-  padding: 12px 15px;
+td {
+  padding: 2px 5px;
   text-align: left;
 }
 
-th:first-child, td:first-child {
-  padding-left: 0; 
-}
-
-th:last-child, td:last-child {
-  padding-right: 0; 
+tr {
+  border-bottom: 1px solid #E1E1E1;
 }
 
 tbody tr:hover {
